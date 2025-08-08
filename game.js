@@ -49,6 +49,38 @@ function tieCheck() { // A tie occurs when all spaces are filled and no player h
     return true
 }
 
+function playerInput (player) { // Prompts the player to make their move
+    console.log("It's your turn, Player " + player)
+    prompt.start()
+    prompt.get(['move'], function (err, result) { // Get input from the player
+        if (err) {
+            console.error('Prompt error:', err)
+            return
+        }
+        let move = result.move // The player's input is stored in move
+        if (isNaN(move) || move < 1 || move > 9 || grid[move] !== '') { // Check if the input is invalid
+            console.log('Invalid move. Try again.')
+            playerInput(player)
+        } else { // If the input is valid, plot the move on the grid
+            plotGrid(move, player)
+            displayGrid()
+            if (winCheck(player)) {
+                console.log(player + ' wins!')
+                return
+            } else if (tieCheck()) {
+                console.log('It\'s a tie!')
+                return
+            }
+            if (player === 'X') {
+                playerInput('O')
+            } else {
+                playerInput('X')
+            }
+        }
+    });
+
+}
+
 console.log('Game started: \n' + // Instructions for the game
     'Select a number between 1 and 9 to place your mark. \n' +
     ' 1 | 2 | 3 \n' +
@@ -58,3 +90,4 @@ console.log('Game started: \n' + // Instructions for the game
     ' 7 | 8 | 9 \n')
 
 
+playerInput('X') // Start the game with player X
